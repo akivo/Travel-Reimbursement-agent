@@ -1,0 +1,13 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+# Environment — NEVER commit your API keys
+.env
+# Outputs (optional, can commit sample outputs later)
+outputs/
+# IDE
+.vscode/
+.idea/
