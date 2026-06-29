@@ -1,0 +1,56 @@
+{
+  "claim_id": "CLM-001",
+  "employee": {
+    "id": "EMP-1042",
+    "name": "Riya Sharma",
+    "department": "Sales",
+    "manager": "Arjun Mehta"
+  },
+  "travel": {
+    "purpose": "Client meeting — Mumbai office",
+    "destination": "Mumbai, India",
+    "start_date": "2025-06-10",
+    "end_date": "2025-06-12",
+    "submission_date": "2025-06-20"
+  },
+  "expenses": [
+    {
+      "category": "flight",
+      "description": "Round trip economy — Delhi to Mumbai",
+      "amount": 620.00,
+      "type": "domestic",
+      "has_receipt": true,
+      "vendor": "IndiGo Airlines",
+      "date": "2025-06-10"
+    },
+    {
+      "category": "hotel",
+      "description": "Hotel — 2 nights at $190/night",
+      "amount": 380.00,
+      "nights": 2,
+      "per_night": 190.00,
+      "has_receipt": true,
+      "vendor": "Taj Hotels",
+      "date": "2025-06-10"
+    },
+    {
+      "category": "meals",
+      "description": "Per diem — 2 days",
+      "amount": 150.00,
+      "days": 2,
+      "has_receipt": false,
+      "vendor": "Per Diem",
+      "date": "2025-06-10"
+    },
+    {
+      "category": "ground_transport",
+      "description": "Uber rides — airport to hotel",
+      "amount": 40.00,
+      "has_receipt": true,
+      "vendor": "Uber",
+      "date": "2025-06-11"
+    }
+  ],
+  "total_claimed": 1190.00,
+  "expected_decision": "Approve"
+}

@@ -1,0 +1,49 @@
+{
+  "claim_id": "CLM-003",
+  "employee": {
+    "id": "EMP-3301",
+    "name": "Vivek Nair",
+    "department": "Business Development",
+    "manager": "Priya Kapoor"
+  },
+  "travel": {
+    "purpose": "International client visit — London",
+    "destination": "London, UK",
+    "start_date": "2025-04-05",
+    "end_date": "2025-04-10",
+    "submission_date": "2025-06-20"
+  },
+  "expenses": [
+    {
+      "category": "flight",
+      "description": "Business class — Delhi to London (no VP approval)",
+      "amount": 4200.00,
+      "type": "international",
+      "class": "business",
+      "has_receipt": true,
+      "vendor": "British Airways",
+      "date": "2025-04-05"
+    },
+    {
+      "category": "hotel",
+      "description": "The Savoy London — 5 nights at $350/night",
+      "amount": 1750.00,
+      "nights": 5,
+      "per_night": 350.00,
+      "has_receipt": true,
+      "vendor": "The Savoy",
+      "date": "2025-04-05"
+    },
+    {
+      "category": "meals",
+      "description": "Per diem — 5 days",
+      "amount": 375.00,
+      "days": 5,
+      "has_receipt": false,
+      "vendor": "Per Diem",
+      "date": "2025-04-05"
+    }
+  ],
+  "total_claimed": 6325.00,
+  "expected_decision": "Reject"
+}

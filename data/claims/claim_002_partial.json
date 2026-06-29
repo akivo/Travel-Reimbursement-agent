@@ -1,0 +1,64 @@
+{
+  "claim_id": "CLM-002",
+  "employee": {
+    "id": "EMP-2089",
+    "name": "Karan Patel",
+    "department": "Engineering",
+    "manager": "Sunita Rao"
+  },
+  "travel": {
+    "purpose": "Tech conference — Bengaluru",
+    "destination": "Bengaluru, India",
+    "start_date": "2025-06-15",
+    "end_date": "2025-06-18",
+    "submission_date": "2025-06-28"
+  },
+  "expenses": [
+    {
+      "category": "flight",
+      "description": "Round trip economy — Hyderabad to Bengaluru",
+      "amount": 480.00,
+      "type": "domestic",
+      "has_receipt": true,
+      "vendor": "Air India",
+      "date": "2025-06-15"
+    },
+    {
+      "category": "hotel",
+      "description": "ITC Gardenia — 3 nights at $240/night",
+      "amount": 720.00,
+      "nights": 3,
+      "per_night": 240.00,
+      "has_receipt": true,
+      "vendor": "ITC Hotels",
+      "date": "2025-06-15"
+    },
+    {
+      "category": "meals",
+      "description": "Per diem — 3 days",
+      "amount": 225.00,
+      "days": 3,
+      "has_receipt": false,
+      "vendor": "Per Diem",
+      "date": "2025-06-15"
+    },
+    {
+      "category": "meals",
+      "description": "Team dinner with client — no receipt",
+      "amount": 180.00,
+      "has_receipt": false,
+      "vendor": "The Only Place Restaurant",
+      "date": "2025-06-17"
+    },
+    {
+      "category": "ground_transport",
+      "description": "Uber to conference venue",
+      "amount": 35.00,
+      "has_receipt": true,
+      "vendor": "Uber",
+      "date": "2025-06-16"
+    }
+  ],
+  "total_claimed": 1640.00,
+  "expected_decision": "Partially Approve"
+}
