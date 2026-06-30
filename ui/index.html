@@ -3,177 +3,183 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Travel Reimbursement Approval Agent | HCL Tech</title>
-  <meta name="description" content="AI-powered travel reimbursement approval agent using LangChain and Groq LLM. Evaluates claims against company policy with structured decisions." />
+  <title>Travel Reimbursement Agent | HCL Tech</title>
+  <meta name="description" content="AI-powered travel reimbursement approval agent using LangChain and Groq LLM." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-
   <style>
-    /* ── CSS Variables ───────────────────────────────────────── */
     :root {
-      --bg-base:     #0d0f14;
-      --bg-surface:  #13161e;
-      --bg-card:     #1a1e2a;
-      --bg-input:    #0f1118;
-      --border:      #252a38;
-      --border-glow: #3b82f6;
+      --bg:         #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-soft:    #f1f5f9;
+      --bg-input:   #f8fafc;
+      --border:     #e2e8f0;
+      --border-focus: #6366f1;
 
-      --text-primary:   #f1f5f9;
-      --text-secondary: #94a3b8;
-      --text-muted:     #4b5563;
+      --text:       #0f172a;
+      --text-2:     #475569;
+      --text-3:     #94a3b8;
 
-      --blue:    #3b82f6;
-      --blue-d:  #1d4ed8;
-      --green:   #22c55e;
-      --green-d: #16a34a;
-      --yellow:  #f59e0b;
-      --red:     #ef4444;
-      --orange:  #f97316;
-      --purple:  #a855f7;
+      --indigo:     #6366f1;
+      --indigo-d:   #4f46e5;
+      --indigo-lt:  #eef2ff;
+      --green:      #10b981;
+      --green-lt:   #ecfdf5;
+      --red:        #ef4444;
+      --red-lt:     #fef2f2;
+      --amber:      #f59e0b;
+      --amber-lt:   #fffbeb;
+      --orange:     #f97316;
+      --orange-lt:  #fff7ed;
 
       --radius: 12px;
-      --shadow: 0 4px 24px rgba(0,0,0,0.4);
-      --glow-blue:   0 0 20px rgba(59,130,246,0.25);
-      --glow-green:  0 0 20px rgba(34,197,94,0.25);
-      --glow-red:    0 0 20px rgba(239,68,68,0.25);
-      --glow-yellow: 0 0 20px rgba(245,158,11,0.25);
-      --glow-orange: 0 0 20px rgba(249,115,22,0.25);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow:    0 4px 16px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.04);
+      --shadow-lg: 0 10px 40px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
     }
 
-    /* ── Reset & Base ────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
       font-family: 'Inter', system-ui, sans-serif;
-      background: var(--bg-base);
-      color: var(--text-primary);
+      background: var(--bg);
+      color: var(--text);
       min-height: 100vh;
-      overflow-x: hidden;
     }
 
-    /* ── Animated Background Grid ────────────────────────────── */
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background-image:
-        linear-gradient(rgba(59,130,246,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(59,130,246,0.03) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* ── Header ──────────────────────────────────────────────── */
+    /* ── Header ── */
     header {
-      position: relative;
-      z-index: 10;
-      padding: 24px 32px;
+      background: var(--bg-surface);
       border-bottom: 1px solid var(--border);
-      background: rgba(13,15,20,0.8);
-      backdrop-filter: blur(12px);
+      padding: 0 40px;
+      height: 64px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      box-shadow: var(--shadow-sm);
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
-    .header-logo {
+
+    .logo {
       display: flex;
       align-items: center;
       gap: 12px;
     }
-    .header-logo .icon {
-      width: 40px; height: 40px;
-      background: linear-gradient(135deg, var(--blue), var(--purple));
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--indigo), #8b5cf6);
       border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px;
-      box-shadow: var(--glow-blue);
-    }
-    .header-logo h1 {
-      font-size: 18px;
-      font-weight: 700;
-      background: linear-gradient(135deg, #f1f5f9, #94a3b8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .header-logo span {
-      font-size: 12px;
-      color: var(--text-muted);
-      font-weight: 400;
-      display: block;
-      margin-top: 1px;
-    }
-    .header-badge {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 6px 14px;
-      background: rgba(59,130,246,0.1);
-      border: 1px solid rgba(59,130,246,0.2);
-      border-radius: 20px;
-      font-size: 12px;
-      color: var(--blue);
-      font-weight: 500;
+      justify-content: center;
+      font-size: 18px;
     }
-    .header-badge .dot {
-      width: 6px; height: 6px;
+
+    .logo-text h1 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .logo-text p {
+      font-size: 11px;
+      color: var(--text-3);
+      margin-top: 1px;
+    }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 14px;
+      background: var(--green-lt);
+      border: 1px solid #a7f3d0;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #065f46;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
       background: var(--green);
       border-radius: 50%;
       animation: pulse 2s infinite;
     }
+
     @keyframes pulse {
-      0%,100% { opacity: 1; }
-      50%      { opacity: 0.4; }
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
     }
 
-    /* ── Main Layout ─────────────────────────────────────────── */
+    /* ── Main layout ── */
     .main {
-      position: relative;
-      z-index: 1;
-      max-width: 1200px;
+      max-width: 1280px;
       margin: 0 auto;
-      padding: 32px 24px 64px;
+      padding: 32px 24px 80px;
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 420px 1fr;
       gap: 24px;
+      align-items: start;
     }
-    @media (max-width: 900px) {
+
+    @media (max-width: 960px) {
       .main { grid-template-columns: 1fr; }
     }
 
-    /* ── Card Component ──────────────────────────────────────── */
+    /* ── Card ── */
     .card {
-      background: var(--bg-card);
+      background: var(--bg-surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 24px;
-      box-shadow: var(--shadow);
-      transition: border-color 0.3s;
+      box-shadow: var(--shadow-sm);
     }
-    .card:hover { border-color: rgba(59,130,246,0.2); }
-    .card-title {
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       font-size: 13px;
       font-weight: 600;
-      letter-spacing: 0.08em;
+      color: var(--text-2);
       text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 16px;
-      display: flex; align-items: center; gap: 8px;
+      letter-spacing: 0.06em;
+      margin-bottom: 20px;
     }
-    .card-title .icon { font-size: 16px; }
 
-    /* ── Input Section ───────────────────────────────────────── */
-    .input-section { grid-column: 1; }
-    .select-label {
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--text-secondary);
-      margin-bottom: 6px;
+    .card-header-icon {
+      width: 28px;
+      height: 28px;
+      background: var(--indigo-lt);
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
     }
+
+    /* ── Form elements ── */
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-2);
+      margin-bottom: 6px;
+      letter-spacing: 0.02em;
+    }
+
     select, textarea {
       width: 100%;
       background: var(--bg-input);
-      border: 1px solid var(--border);
+      border: 1.5px solid var(--border);
       border-radius: 8px;
-      color: var(--text-primary);
+      color: var(--text);
       font-family: inherit;
       font-size: 13px;
       padding: 10px 14px;
@@ -181,49 +187,53 @@
       transition: border-color 0.2s, box-shadow 0.2s;
       appearance: none;
     }
+
     select:focus, textarea:focus {
-      border-color: var(--blue);
-      box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+      border-color: var(--indigo);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
     }
+
     select {
       cursor: pointer;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
-      background-position: right 12px center;
-      padding-right: 36px;
+      background-position: right 14px center;
+      padding-right: 40px;
     }
-    select option { background: var(--bg-card); }
 
     textarea {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
+      font-size: 11.5px;
       resize: vertical;
-      min-height: 280px;
-      line-height: 1.6;
-      margin-top: 12px;
+      min-height: 260px;
+      line-height: 1.65;
+      margin-top: 16px;
+      color: var(--text-2);
     }
-    .divider {
-      text-align: center;
-      color: var(--text-muted);
+
+    .or-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 16px 0 0;
       font-size: 11px;
-      margin: 12px 0;
-      position: relative;
+      color: var(--text-3);
+      font-weight: 500;
     }
-    .divider::before, .divider::after {
+
+    .or-divider::before, .or-divider::after {
       content: '';
-      position: absolute; top: 50%;
-      width: 42%; height: 1px;
+      flex: 1;
+      height: 1px;
       background: var(--border);
     }
-    .divider::before { left: 0; }
-    .divider::after  { right: 0; }
 
-    /* ── Evaluate Button ─────────────────────────────────────── */
+    /* ── Evaluate button ── */
     #evaluate-btn {
       width: 100%;
-      margin-top: 16px;
-      padding: 14px;
-      background: linear-gradient(135deg, var(--blue), var(--blue-d));
+      margin-top: 20px;
+      padding: 13px 20px;
+      background: linear-gradient(135deg, var(--indigo), var(--indigo-d));
       color: #fff;
       font-family: inherit;
       font-size: 14px;
@@ -232,396 +242,522 @@
       border-radius: 8px;
       cursor: pointer;
       transition: opacity 0.2s, transform 0.1s, box-shadow 0.2s;
-      box-shadow: var(--glow-blue);
-      letter-spacing: 0.03em;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
+      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      letter-spacing: 0.02em;
     }
+
     #evaluate-btn:hover:not(:disabled) {
-      opacity: 0.9;
-      box-shadow: 0 0 32px rgba(59,130,246,0.4);
+      opacity: 0.92;
+      box-shadow: 0 6px 24px rgba(99, 102, 241, 0.45);
     }
-    #evaluate-btn:active:not(:disabled) { transform: scale(0.98); }
+
+    #evaluate-btn:active:not(:disabled) { transform: scale(0.99); }
+
     #evaluate-btn:disabled {
-      opacity: 0.5;
+      opacity: 0.55;
       cursor: not-allowed;
     }
+
     .spinner {
       display: none;
-      width: 16px; height: 16px;
+      width: 15px;
+      height: 15px;
       border: 2px solid rgba(255,255,255,0.3);
       border-top-color: #fff;
       border-radius: 50%;
       animation: spin 0.7s linear infinite;
     }
+
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── Output Section ──────────────────────────────────────── */
-    .output-section { grid-column: 2; display: flex; flex-direction: column; gap: 16px; }
-    @media (max-width: 900px) { .output-section { grid-column: 1; } }
-
-    /* ── Decision Banner ─────────────────────────────────────── */
-    .decision-banner {
-      border-radius: var(--radius);
-      padding: 20px 24px;
-      display: none;
-      animation: slideIn 0.4s ease;
-      border: 1px solid transparent;
-    }
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .decision-banner.approve  { background: rgba(34,197,94,0.08);  border-color: rgba(34,197,94,0.3);  box-shadow: var(--glow-green); }
-    .decision-banner.partial  { background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.3); box-shadow: var(--glow-yellow); }
-    .decision-banner.reject   { background: rgba(239,68,68,0.08);  border-color: rgba(239,68,68,0.3);  box-shadow: var(--glow-red); }
-    .decision-banner.manual   { background: rgba(249,115,22,0.08); border-color: rgba(249,115,22,0.3); box-shadow: var(--glow-orange); }
-
-    .decision-top {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 12px;
-    }
-    .decision-label {
-      font-size: 22px;
-      font-weight: 800;
-      display: flex; align-items: center; gap: 10px;
-    }
-    .decision-label.approve { color: var(--green); }
-    .decision-label.partial { color: var(--yellow); }
-    .decision-label.reject  { color: var(--red); }
-    .decision-label.manual  { color: var(--orange); }
-
-    .confidence-wrap { text-align: right; }
-    .confidence-pct {
-      font-size: 28px;
-      font-weight: 800;
-      font-variant-numeric: tabular-nums;
-      line-height: 1;
-    }
-    .confidence-sub {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 2px;
-    }
-    .confidence-bar-track {
-      height: 6px;
-      background: var(--bg-input);
-      border-radius: 99px;
-      margin-top: 10px;
-      overflow: hidden;
-    }
-    .confidence-bar-fill {
-      height: 100%;
-      border-radius: 99px;
-      transition: width 0.8s cubic-bezier(.4,0,.2,1);
-      background: linear-gradient(90deg, var(--blue), var(--purple));
-    }
-
-    .amount-row {
-      display: flex; gap: 12px; margin-top: 12px;
-    }
-    .amount-box {
-      flex: 1;
-      padding: 12px 16px;
-      border-radius: 8px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-    }
-    .amount-box .lbl { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
-    .amount-box .val { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }
-    .amount-box.approved .val { color: var(--green); }
-    .amount-box.rejected .val { color: var(--red); }
-
-    .approver-row {
-      margin-top: 12px;
-      display: flex; align-items: center; gap: 10px;
-      font-size: 13px; color: var(--text-secondary);
-    }
-    .approver-badge {
-      padding: 3px 10px;
-      border-radius: 99px;
-      font-size: 12px;
-      font-weight: 600;
-      background: rgba(59,130,246,0.15);
-      color: var(--blue);
-      border: 1px solid rgba(59,130,246,0.25);
-    }
-
-    /* ── Explanation ─────────────────────────────────────────── */
-    .explanation-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 16px 20px;
-      font-size: 13px;
-      color: var(--text-secondary);
-      line-height: 1.6;
-      display: none;
-      animation: slideIn 0.4s ease 0.1s both;
-    }
-    .explanation-card strong { color: var(--text-primary); }
-
-    /* ── Deductions & Policy Refs ────────────────────────────── */
-    .detail-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      display: none;
-      animation: slideIn 0.4s ease 0.15s both;
-    }
-    @media (max-width: 1100px) { .detail-grid { grid-template-columns: 1fr; } }
-
-    .detail-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 16px;
-    }
-    .detail-card h3 {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-muted);
-      margin-bottom: 12px;
-    }
-    .deduction-item {
-      padding: 10px 12px;
-      background: var(--bg-surface);
-      border-radius: 8px;
-      margin-bottom: 8px;
-      border-left: 3px solid var(--red);
-    }
-    .deduction-item .di-desc {
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--text-primary);
-      margin-bottom: 4px;
-    }
-    .deduction-item .di-amounts {
-      font-size: 11px;
-      color: var(--text-muted);
-      font-variant-numeric: tabular-nums;
-    }
-    .deduction-item .di-reason {
-      font-size: 11px;
-      color: var(--red);
-      margin-top: 3px;
-    }
-    .policy-ref-item {
-      display: flex; align-items: center; gap: 8px;
-      padding: 7px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 12px;
-      color: var(--text-secondary);
-    }
-    .policy-ref-item:last-child { border-bottom: none; }
-    .policy-ref-item::before {
-      content: '§';
-      color: var(--blue);
-      font-weight: 700;
-      font-size: 14px;
-    }
-
-    /* ── Audit Trail ─────────────────────────────────────────── */
-    .audit-section {
-      display: none;
-      animation: slideIn 0.4s ease 0.2s both;
-    }
-    .audit-toggle {
-      width: 100%;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 14px 20px;
-      color: var(--text-secondary);
-      font-family: inherit;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: space-between;
-      transition: background 0.2s, border-color 0.2s;
-      text-align: left;
-    }
-    .audit-toggle:hover { background: var(--bg-surface); border-color: rgba(59,130,246,0.2); }
-    .audit-toggle .arrow { transition: transform 0.3s; font-size: 16px; }
-    .audit-toggle.open .arrow { transform: rotate(180deg); }
-
-    .audit-body {
-      display: none;
-      background: var(--bg-input);
-      border: 1px solid var(--border);
-      border-top: none;
-      border-radius: 0 0 var(--radius) var(--radius);
-      overflow: hidden;
-    }
-    .audit-body.open { display: block; }
-    .audit-step {
-      display: flex; gap: 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 12px;
-    }
-    .audit-step:last-child { border-bottom: none; }
-    .audit-step-num {
-      min-width: 40px;
-      display: flex; align-items: flex-start; justify-content: center;
-      padding: 12px 0;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text-muted);
-      border-right: 1px solid var(--border);
-      background: rgba(0,0,0,0.2);
-    }
-    .audit-step-body { padding: 10px 14px; flex: 1; }
-    .audit-tool {
-      display: inline-flex; align-items: center; gap: 5px;
-      padding: 2px 8px;
-      background: rgba(59,130,246,0.12);
-      border: 1px solid rgba(59,130,246,0.2);
-      border-radius: 4px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--blue);
-      margin-bottom: 6px;
-    }
-    .audit-io { color: var(--text-muted); line-height: 1.5; }
-    .audit-io .lbl { color: var(--text-secondary); font-weight: 500; }
-
-    /* ── Loading Skeleton ────────────────────────────────────── */
-    .skeleton {
-      display: none;
+    /* ── Output panel ── */
+    .output-panel {
+      display: flex;
       flex-direction: column;
-      gap: 12px;
-      animation: slideIn 0.3s ease;
-    }
-    .skel-block {
-      height: var(--h, 60px);
-      background: linear-gradient(90deg,
-        var(--bg-card) 25%,
-        var(--bg-surface) 50%,
-        var(--bg-card) 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.4s infinite;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-    }
-    @keyframes shimmer {
-      0%   { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
+      gap: 16px;
     }
 
-    /* ── Error Toast ─────────────────────────────────────────── */
-    .error-toast {
-      display: none;
-      background: rgba(239,68,68,0.1);
-      border: 1px solid rgba(239,68,68,0.3);
-      border-radius: var(--radius);
-      padding: 14px 18px;
-      color: var(--red);
-      font-size: 13px;
-      animation: slideIn 0.3s ease;
-    }
-    .error-toast strong { font-weight: 600; display: block; margin-bottom: 4px; }
-
-    /* ── Empty State ─────────────────────────────────────────── */
+    /* ── Empty state ── */
     .empty-state {
+      background: var(--bg-surface);
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 60px 32px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 300px;
-      color: var(--text-muted);
       text-align: center;
-      border: 1px dashed var(--border);
+      gap: 12px;
+    }
+
+    .empty-icon {
+      width: 60px;
+      height: 60px;
+      background: var(--indigo-lt);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin-bottom: 4px;
+    }
+
+    .empty-state h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .empty-state p {
+      font-size: 13px;
+      color: var(--text-3);
+      max-width: 260px;
+      line-height: 1.6;
+    }
+
+    /* ── Skeleton ── */
+    .skeleton {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .skel-block {
+      height: var(--h, 80px);
+      background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
       border-radius: var(--radius);
     }
-    .empty-state .big { font-size: 40px; margin-bottom: 12px; }
-    .empty-state p { font-size: 13px; line-height: 1.6; max-width: 240px; }
 
-    /* ── Full-width JSON Output ───────────────────────────────── */
-    .json-section {
-      grid-column: 1 / -1;
-      display: none;
-      animation: slideIn 0.4s ease 0.25s both;
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
     }
-    .json-toggle {
-      width: 100%;
-      background: var(--bg-card);
+
+    /* ── Error toast ── */
+    .error-toast {
+      display: none;
+      background: var(--red-lt);
+      border: 1px solid #fecaca;
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      color: #991b1b;
+      font-size: 13px;
+      animation: slideIn 0.3s ease;
+    }
+
+    .error-toast strong { font-weight: 600; display: block; margin-bottom: 4px; }
+
+    /* ── Decision banner ── */
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .decision-banner {
+      display: none;
+      border-radius: var(--radius);
+      padding: 24px;
+      border: 1.5px solid transparent;
+      animation: slideIn 0.4s ease;
+    }
+
+    .decision-banner.approve { background: var(--green-lt);  border-color: #a7f3d0; }
+    .decision-banner.partial { background: var(--amber-lt);  border-color: #fde68a; }
+    .decision-banner.reject  { background: var(--red-lt);    border-color: #fecaca; }
+    .decision-banner.manual  { background: var(--orange-lt); border-color: #fed7aa; }
+
+    .decision-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .decision-label {
+      font-size: 20px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      letter-spacing: -0.01em;
+    }
+
+    .decision-label.approve { color: #065f46; }
+    .decision-label.partial { color: #92400e; }
+    .decision-label.reject  { color: #991b1b; }
+    .decision-label.manual  { color: #9a3412; }
+
+    .confidence-block { text-align: right; }
+
+    .confidence-pct {
+      font-size: 30px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    .confidence-sub {
+      font-size: 11px;
+      color: var(--text-3);
+      font-weight: 500;
+      margin-top: 3px;
+    }
+
+    .conf-bar-track {
+      height: 5px;
+      background: rgba(0,0,0,0.06);
+      border-radius: 99px;
+      margin-top: 14px;
+      overflow: hidden;
+    }
+
+    .conf-bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.9s cubic-bezier(.4,0,.2,1);
+      background: linear-gradient(90deg, var(--indigo), #8b5cf6);
+    }
+
+    .amount-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .amount-box {
+      flex: 1;
+      padding: 14px 16px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .amount-box .lbl {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-3);
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .amount-box .val {
+      font-size: 22px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--text);
+    }
+
+    .amount-box.approved .val { color: var(--green); }
+    .amount-box.rejected .val { color: var(--red); }
+
+    .meta-row {
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-2);
+      flex-wrap: wrap;
+    }
+
+    .meta-pill {
+      padding: 3px 10px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(99,102,241,0.08);
+      color: var(--indigo-d);
+      border: 1px solid rgba(99,102,241,0.15);
+    }
+
+    /* ── Explanation card ── */
+    .explanation-card {
+      display: none;
+      background: var(--bg-surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 14px 20px;
-      color: var(--text-secondary);
+      padding: 18px 20px;
+      font-size: 13.5px;
+      color: var(--text-2);
+      line-height: 1.7;
+      animation: slideIn 0.4s ease 0.1s both;
+    }
+
+    .explanation-card .exp-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+
+    /* ── Details grid ── */
+    .detail-grid {
+      display: none;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      animation: slideIn 0.4s ease 0.15s both;
+    }
+
+    @media (max-width: 1100px) { .detail-grid { grid-template-columns: 1fr; } }
+
+    .detail-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+
+    .detail-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-3);
+      margin-bottom: 12px;
+    }
+
+    .deduction-item {
+      background: var(--red-lt);
+      border: 1px solid #fecaca;
+      border-left: 3px solid var(--red);
+      border-radius: 7px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+    }
+
+    .deduction-item .di-desc {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .deduction-item .di-amounts {
+      font-size: 11px;
+      color: var(--text-2);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .deduction-item .di-reason {
+      font-size: 11px;
+      color: #b91c1c;
+      margin-top: 3px;
+      font-weight: 500;
+    }
+
+    .policy-ref-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--bg-soft);
+      font-size: 12.5px;
+      color: var(--text-2);
+    }
+
+    .policy-ref-item:last-child { border-bottom: none; }
+
+    .policy-ref-badge {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--indigo);
+      background: var(--indigo-lt);
+      padding: 2px 7px;
+      border-radius: 5px;
+      white-space: nowrap;
+    }
+
+    .missing-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      background: var(--amber-lt);
+      border: 1px solid #fde68a;
+      border-radius: 6px;
+      margin-bottom: 6px;
+      font-size: 12px;
+      color: #78350f;
+      font-weight: 500;
+    }
+
+    /* ── Audit trail ── */
+    .audit-section {
+      display: none;
+      animation: slideIn 0.4s ease 0.2s both;
+    }
+
+    .collapsible-header {
+      width: 100%;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      color: var(--text-2);
       font-family: inherit;
       font-size: 13px;
-      font-weight: 500;
+      font-weight: 600;
       cursor: pointer;
-      display: flex; align-items: center; justify-content: space-between;
-      transition: background 0.2s, border-color 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.15s;
+      text-align: left;
     }
-    .json-toggle:hover { background: var(--bg-surface); border-color: rgba(59,130,246,0.2); }
-    .json-body {
+
+    .collapsible-header:hover { background: var(--bg-soft); }
+
+    .collapsible-header .ch-left {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .ch-icon {
+      width: 26px;
+      height: 26px;
+      background: var(--indigo-lt);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+    }
+
+    .ch-arrow {
+      font-size: 14px;
+      color: var(--text-3);
+      transition: transform 0.25s;
+    }
+
+    .collapsible-header.open .ch-arrow { transform: rotate(180deg); }
+
+    .collapsible-body {
       display: none;
-      background: var(--bg-input);
+      background: var(--bg-surface);
       border: 1px solid var(--border);
       border-top: none;
       border-radius: 0 0 var(--radius) var(--radius);
+      overflow: hidden;
     }
-    .json-body.open { display: block; }
+
+    .collapsible-body.open { display: block; }
+
+    .audit-step {
+      display: flex;
+      border-bottom: 1px solid var(--bg-soft);
+      font-size: 12px;
+    }
+
+    .audit-step:last-child { border-bottom: none; }
+
+    .step-num {
+      min-width: 44px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 14px 0;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-3);
+      background: var(--bg-soft);
+      border-right: 1px solid var(--border);
+    }
+
+    .step-body { padding: 12px 16px; flex: 1; }
+
+    .step-tool-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      background: var(--indigo-lt);
+      border: 1px solid rgba(99,102,241,0.2);
+      border-radius: 5px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--indigo-d);
+      margin-bottom: 7px;
+    }
+
+    .step-io { color: var(--text-2); line-height: 1.55; }
+    .step-io .lbl { color: var(--text-3); font-weight: 600; font-size: 10px; text-transform: uppercase; }
+
+    /* ── JSON output ── */
+    .json-section {
+      display: none;
+      animation: slideIn 0.4s ease 0.25s both;
+    }
+
     .json-body pre {
       font-family: 'JetBrains Mono', monospace;
       font-size: 11.5px;
-      color: var(--text-secondary);
+      color: var(--text-2);
+      background: var(--bg-soft);
       padding: 20px;
       overflow-x: auto;
       line-height: 1.7;
-      max-height: 400px;
+      max-height: 380px;
       overflow-y: auto;
       white-space: pre-wrap;
       word-break: break-word;
     }
 
-    /* ── Footer ──────────────────────────────────────────────── */
+    /* ── Footer ── */
     footer {
       text-align: center;
       padding: 24px;
-      color: var(--text-muted);
       font-size: 12px;
+      color: var(--text-3);
       border-top: 1px solid var(--border);
-      position: relative; z-index: 1;
     }
-    footer span { color: var(--blue); }
+
+    footer span { color: var(--indigo); font-weight: 500; }
   </style>
 </head>
 <body>
 
-  <!-- ── Header ── -->
   <header>
-    <div class="header-logo">
-      <div class="icon">🧾</div>
-      <div>
+    <div class="logo">
+      <div class="logo-icon">🧾</div>
+      <div class="logo-text">
         <h1>Reimbursement Approval Agent</h1>
-        <span>Powered by LangChain · Groq · llama-3.3-70b-versatile</span>
+        <p>Powered by LangChain · Groq · llama-3.1-8b-instant</p>
       </div>
     </div>
-    <div class="header-badge">
-      <div class="dot"></div>
+    <div class="status-pill">
+      <div class="status-dot"></div>
       Agent Online
     </div>
   </header>
 
-  <!-- ── Main ── -->
   <main class="main">
 
     <!-- LEFT: Input Panel -->
-    <section class="card input-section">
-      <div class="card-title"><span class="icon">📋</span> Claim Input</div>
+    <section class="card" style="position: sticky; top: 80px;">
+      <div class="card-header">
+        <div class="card-header-icon">📋</div>
+        Claim Input
+      </div>
 
-      <p class="select-label">Select a sample claim</p>
+      <label for="claim-select">Select a sample claim</label>
       <select id="claim-select" aria-label="Select sample claim">
         <option value="">— Choose a sample claim —</option>
       </select>
 
-      <div class="divider">or paste custom JSON below</div>
+      <div class="or-divider">or paste custom JSON below</div>
 
       <textarea
         id="claim-json"
@@ -637,19 +773,20 @@
     </section>
 
     <!-- RIGHT: Output Panel -->
-    <section class="output-section">
+    <div class="output-panel">
 
-      <!-- Empty state (shown before first run) -->
+      <!-- Empty state -->
       <div class="empty-state" id="empty-state">
-        <div class="big">🤖</div>
-        <p>Select a sample claim and click <strong>Evaluate</strong> to see the AI agent's decision.</p>
+        <div class="empty-icon">🤖</div>
+        <h3>No claim evaluated yet</h3>
+        <p>Select a sample claim from the left panel and click <strong>Evaluate Claim</strong> to get started.</p>
       </div>
 
       <!-- Loading skeleton -->
       <div class="skeleton" id="skeleton">
-        <div class="skel-block" style="--h:100px;"></div>
+        <div class="skel-block" style="--h:120px;"></div>
         <div class="skel-block" style="--h:60px;"></div>
-        <div class="skel-block" style="--h:80px;"></div>
+        <div class="skel-block" style="--h:90px;"></div>
       </div>
 
       <!-- Error toast -->
@@ -658,48 +795,51 @@
         <span id="error-msg"></span>
       </div>
 
-      <!-- Decision Banner -->
+      <!-- Decision banner -->
       <div class="decision-banner" id="decision-banner">
         <div class="decision-top">
           <div class="decision-label" id="decision-label"></div>
-          <div class="confidence-wrap">
+          <div class="confidence-block">
             <div class="confidence-pct" id="confidence-pct">—</div>
-            <div class="confidence-sub">Confidence</div>
+            <div class="confidence-sub">Confidence Score</div>
           </div>
         </div>
-        <div class="confidence-bar-track">
-          <div class="confidence-bar-fill" id="confidence-bar" style="width:0%"></div>
+        <div class="conf-bar-track">
+          <div class="conf-bar-fill" id="confidence-bar" style="width:0%"></div>
         </div>
         <div class="amount-row">
           <div class="amount-box approved">
-            <div class="lbl">✅ Approved</div>
+            <div class="lbl">Approved</div>
             <div class="val" id="approved-amount">—</div>
           </div>
           <div class="amount-box rejected">
-            <div class="lbl">❌ Rejected</div>
+            <div class="lbl">Deducted / Rejected</div>
             <div class="val" id="rejected-amount">—</div>
           </div>
         </div>
-        <div class="approver-row">
-          Required approver: <span class="approver-badge" id="approver-badge">—</span>
-          &nbsp;→ Routed to: <strong id="routed-to">—</strong>
+        <div class="meta-row">
+          Required approver: <span class="meta-pill" id="approver-badge">—</span>
+          &nbsp;·&nbsp; Routed to: <strong id="routed-to">—</strong>
         </div>
       </div>
 
       <!-- Explanation -->
-      <div class="explanation-card" id="explanation-card"></div>
+      <div class="explanation-card" id="explanation-card">
+        <div class="exp-label">Agent Explanation</div>
+        <span id="explanation-text"></span>
+      </div>
 
-      <!-- Deductions & Policy Refs (grid) -->
-      <div class="detail-grid" id="detail-grid">
+      <!-- Deductions & Policy Refs -->
+      <div class="detail-grid" id="detail-grid" style="display: none;">
         <div class="detail-card">
-          <h3>🔻 Deductions</h3>
-          <div id="deductions-list"><em style="color:var(--text-muted);font-size:12px;">No deductions</em></div>
+          <div class="detail-title">Deductions</div>
+          <div id="deductions-list"><em style="color:var(--text-3);font-size:12px;">No deductions applied</em></div>
         </div>
         <div class="detail-card">
-          <h3>📖 Policy References</h3>
+          <div class="detail-title">Policy References</div>
           <div id="policy-refs-list"></div>
-          <div style="margin-top:12px">
-            <h3 style="margin-bottom:8px;">📄 Missing Documents</h3>
+          <div style="margin-top:14px;">
+            <div class="detail-title">Missing Documents</div>
             <div id="missing-docs-list"></div>
           </div>
         </div>
@@ -707,27 +847,33 @@
 
       <!-- Audit Trail -->
       <div class="audit-section" id="audit-section">
-        <button class="audit-toggle" id="audit-toggle" type="button" aria-label="Toggle audit trail">
-          <span>🔍 Audit Trail — Tools Called by Agent</span>
-          <span class="arrow">▾</span>
+        <button class="collapsible-header" id="audit-toggle" type="button" aria-label="Toggle audit trail">
+          <span class="ch-left">
+            <span class="ch-icon">🔍</span>
+            Audit Trail — Tool Execution Log
+          </span>
+          <span class="ch-arrow">▾</span>
         </button>
-        <div class="audit-body" id="audit-body">
+        <div class="collapsible-body" id="audit-body">
           <div id="audit-steps"></div>
         </div>
       </div>
 
-    </section><!-- /output-section -->
-
-    <!-- FULL WIDTH: Raw JSON Output -->
-    <div class="json-section" id="json-section">
-      <button class="json-toggle" id="json-toggle" type="button" aria-label="Toggle raw JSON output">
-        <span>📦 Raw JSON Response</span>
-        <span class="arrow" id="json-arrow">▾</span>
-      </button>
-      <div class="json-body" id="json-body">
-        <pre id="json-output"></pre>
+      <!-- Raw JSON -->
+      <div class="json-section" id="json-section">
+        <button class="collapsible-header" id="json-toggle" type="button" aria-label="Toggle raw JSON output">
+          <span class="ch-left">
+            <span class="ch-icon">📦</span>
+            Raw JSON Response
+          </span>
+          <span class="ch-arrow" id="json-arrow">▾</span>
+        </button>
+        <div class="collapsible-body json-body" id="json-body">
+          <pre id="json-output"></pre>
+        </div>
       </div>
-    </div>
+
+    </div><!-- /output-panel -->
 
   </main>
 
@@ -735,20 +881,19 @@
     Built with <span>LangChain</span> · <span>Groq</span> · <span>FastAPI</span> · <span>Pydantic v2</span> — HCL Tech GenAI Assignment
   </footer>
 
-  <!-- ── JavaScript ── -->
   <script>
     const API_BASE = 'http://localhost:8000';
 
-    const claimSelect  = document.getElementById('claim-select');
-    const claimJson    = document.getElementById('claim-json');
-    const evalBtn      = document.getElementById('evaluate-btn');
-    const btnText      = document.getElementById('btn-text');
-    const spinner      = document.getElementById('spinner');
+    const claimSelect   = document.getElementById('claim-select');
+    const claimJson     = document.getElementById('claim-json');
+    const evalBtn       = document.getElementById('evaluate-btn');
+    const btnText       = document.getElementById('btn-text');
+    const spinnerEl     = document.getElementById('spinner');
 
-    const emptyState   = document.getElementById('empty-state');
-    const skeletonEl   = document.getElementById('skeleton');
-    const errorToast   = document.getElementById('error-toast');
-    const errorMsg     = document.getElementById('error-msg');
+    const emptyState    = document.getElementById('empty-state');
+    const skeletonEl    = document.getElementById('skeleton');
+    const errorToast    = document.getElementById('error-toast');
+    const errorMsg      = document.getElementById('error-msg');
 
     const decisionBanner = document.getElementById('decision-banner');
     const decisionLabel  = document.getElementById('decision-label');
@@ -760,30 +905,29 @@
     const routedTo       = document.getElementById('routed-to');
 
     const explanationCard = document.getElementById('explanation-card');
+    const explanationText = document.getElementById('explanation-text');
     const detailGrid      = document.getElementById('detail-grid');
     const deductionsList  = document.getElementById('deductions-list');
     const policyRefsList  = document.getElementById('policy-refs-list');
     const missingDocsList = document.getElementById('missing-docs-list');
 
-    const auditSection = document.getElementById('audit-section');
-    const auditToggle  = document.getElementById('audit-toggle');
-    const auditBody    = document.getElementById('audit-body');
-    const auditSteps   = document.getElementById('audit-steps');
+    const auditSection  = document.getElementById('audit-section');
+    const auditToggle   = document.getElementById('audit-toggle');
+    const auditBody     = document.getElementById('audit-body');
+    const auditSteps    = document.getElementById('audit-steps');
 
-    const jsonSection = document.getElementById('json-section');
-    const jsonToggle  = document.getElementById('json-toggle');
-    const jsonBody    = document.getElementById('json-body');
-    const jsonOutput  = document.getElementById('json-output');
+    const jsonSection   = document.getElementById('json-section');
+    const jsonToggle    = document.getElementById('json-toggle');
+    const jsonBody      = document.getElementById('json-body');
+    const jsonOutput    = document.getElementById('json-output');
 
-    // ── Decision config ────────────────────────────────────────
     const DECISION_CONFIG = {
-      'Approve':          { cls: 'approve', icon: '✅', label: 'APPROVED'          },
-      'Partially Approve':{ cls: 'partial', icon: '🟡', label: 'PARTIALLY APPROVED' },
-      'Reject':           { cls: 'reject',  icon: '❌', label: 'REJECTED'           },
-      'Manual Review':    { cls: 'manual',  icon: '🔶', label: 'MANUAL REVIEW'      },
+      'Approve':           { cls: 'approve', icon: '✅', label: 'APPROVED' },
+      'Partially Approve': { cls: 'partial', icon: '🟡', label: 'PARTIALLY APPROVED' },
+      'Reject':            { cls: 'reject',  icon: '❌', label: 'REJECTED' },
+      'Manual Review':     { cls: 'manual',  icon: '🔶', label: 'MANUAL REVIEW' },
     };
 
-    // ── Load sample claims from API ────────────────────────────
     async function loadSampleClaims() {
       try {
         const res = await fetch(`${API_BASE}/sample-claims`);
@@ -792,148 +936,123 @@
         claims.forEach(c => {
           const opt = document.createElement('option');
           opt.value = JSON.stringify(c.raw);
-          opt.textContent = `${c.claim_id} — ${c.employee_name} (Expected: ${c.expected_decision})`;
+          opt.textContent = `${c.claim_id} — ${c.employee_name}  (Expected: ${c.expected_decision})`;
           claimSelect.appendChild(opt);
         });
-      } catch (e) {
+      } catch {
         const opt = document.createElement('option');
         opt.disabled = true;
-        opt.textContent = '⚠ API offline — paste JSON manually';
+        opt.textContent = 'Could not connect to API — start uvicorn api:app --reload';
         claimSelect.appendChild(opt);
       }
     }
 
     claimSelect.addEventListener('change', () => {
-      if (claimSelect.value) {
-        const data = JSON.parse(claimSelect.value);
-        claimJson.value = JSON.stringify(data, null, 2);
-      }
+      if (claimSelect.value) claimJson.value = JSON.stringify(JSON.parse(claimSelect.value), null, 2);
     });
 
-    // ── UI State Helpers ───────────────────────────────────────
-    function showLoading() {
-      emptyState.style.display = 'none';
-      errorToast.style.display = 'none';
-      decisionBanner.style.display = 'none';
-      explanationCard.style.display = 'none';
+    function setLoading(on) {
+      evalBtn.disabled = on;
+      spinnerEl.style.display = on ? 'block' : 'none';
+      btnText.textContent = on ? 'Evaluating...' : '⚡ Evaluate Claim';
+    }
+
+    function hide(...els) { els.forEach(e => { e.style.display = 'none'; }); }
+    function show(el, display = 'block') { el.style.display = display; }
+
+    function clearOutput() {
+      hide(decisionBanner, explanationCard, auditSection, jsonSection, errorToast);
       detailGrid.style.display = 'none';
-      auditSection.style.display = 'none';
-      jsonSection.style.display = 'none';
-      skeletonEl.style.display = 'flex';
-
-      evalBtn.disabled = true;
-      spinner.style.display = 'block';
-      btnText.textContent = 'Evaluating…';
     }
 
-    function hideLoading() {
-      skeletonEl.style.display = 'none';
-      evalBtn.disabled = false;
-      spinner.style.display = 'none';
-      btnText.textContent = '⚡ Evaluate Claim';
-    }
+    function renderDecision(data) {
+      const cfg = DECISION_CONFIG[data.decision] || { cls: 'manual', icon: '?', label: data.decision };
 
-    function showError(msg) {
-      hideLoading();
-      errorToast.style.display = 'block';
-      errorMsg.textContent = msg;
-    }
-
-    // ── Render Decision ────────────────────────────────────────
-    function renderDecision(d) {
-      hideLoading();
-
-      const cfg = DECISION_CONFIG[d.decision] || { cls: 'manual', icon: '❓', label: d.decision };
-
-      // Banner
       decisionBanner.className = `decision-banner ${cfg.cls}`;
-      decisionBanner.style.display = 'block';
-      decisionLabel.className = `decision-label ${cfg.cls}`;
-      decisionLabel.innerHTML = `<span>${cfg.icon}</span> ${cfg.label}`;
+      decisionLabel.className  = `decision-label ${cfg.cls}`;
+      decisionLabel.innerHTML  = `${cfg.icon} ${cfg.label}`;
 
-      const pct = Math.round(d.confidence * 100);
+      const pct = Math.round(data.confidence * 100);
       confidencePct.textContent = `${pct}%`;
       setTimeout(() => { confidenceBar.style.width = `${pct}%`; }, 50);
 
-      approvedAmt.textContent = `$${d.approved_amount.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-      rejectedAmt.textContent = `$${d.rejected_amount.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-      approverBadge.textContent = d.required_approver;
-      routedTo.textContent = d.routed_to;
+      approvedAmt.textContent = `$${(data.approved_amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+      rejectedAmt.textContent = `$${(data.rejected_amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+      approverBadge.textContent = data.required_approver || '—';
+      routedTo.textContent = data.routed_to || '—';
 
-      // Explanation
-      explanationCard.style.display = 'block';
-      explanationCard.innerHTML = `<strong>📝 Explanation:</strong><br>${d.explanation}`;
+      show(decisionBanner);
+
+      explanationText.textContent = data.explanation || '';
+      show(explanationCard);
 
       // Deductions
-      detailGrid.style.display = 'grid';
-      if (d.deductions && d.deductions.length > 0) {
-        deductionsList.innerHTML = d.deductions.map(dd => `
-          <div class="deduction-item">
-            <div class="di-desc">${dd.expense_description}</div>
-            <div class="di-amounts">
-              Claimed: $${dd.claimed_amount.toFixed(2)} →
-              Approved: $${dd.approved_amount.toFixed(2)} |
-              Deducted: $${dd.deducted_amount.toFixed(2)}
-            </div>
-            <div class="di-reason">⚠ ${dd.reason} [${dd.policy_ref}]</div>
-          </div>
-        `).join('');
+      deductionsList.innerHTML = '';
+      if (data.deductions && data.deductions.length > 0) {
+        data.deductions.forEach(d => {
+          deductionsList.innerHTML += `
+            <div class="deduction-item">
+              <div class="di-desc">${d.expense_description}</div>
+              <div class="di-amounts">Claimed: $${d.claimed_amount.toFixed(2)} &rarr; Approved: $${d.approved_amount.toFixed(2)} (Deducted: $${d.deducted_amount.toFixed(2)})</div>
+              <div class="di-reason">${d.reason} [${d.policy_ref}]</div>
+            </div>`;
+        });
       } else {
-        deductionsList.innerHTML = '<em style="color:var(--text-muted);font-size:12px;">✅ No deductions</em>';
+        deductionsList.innerHTML = '<em style="color:var(--text-3);font-size:12px;">No deductions applied</em>';
       }
 
-      // Policy Refs
-      policyRefsList.innerHTML = (d.policy_references || []).map(r =>
-        `<div class="policy-ref-item">${r}</div>`
-      ).join('') || '<em style="color:var(--text-muted);font-size:12px;">None cited</em>';
+      // Policy references
+      policyRefsList.innerHTML = '';
+      (data.policy_references || []).forEach(r => {
+        policyRefsList.innerHTML += `<div class="policy-ref-item"><span class="policy-ref-badge">§</span>${r}</div>`;
+      });
 
-      // Missing Docs
-      missingDocsList.innerHTML = (d.missing_documents || []).map(m =>
-        `<div class="policy-ref-item" style="color:var(--yellow)">⚠ ${m}</div>`
-      ).join('') || '<em style="color:var(--text-muted);font-size:12px;">✅ None</em>';
+      // Missing documents
+      missingDocsList.innerHTML = '';
+      if (data.missing_documents && data.missing_documents.length > 0) {
+        data.missing_documents.forEach(d => {
+          missingDocsList.innerHTML += `<div class="missing-item">⚠ ${d}</div>`;
+        });
+      } else {
+        missingDocsList.innerHTML = '<em style="color:var(--text-3);font-size:12px;">None</em>';
+      }
 
-      // Audit Trail
-      if (d.audit_trail && d.audit_trail.length > 0) {
-        auditSection.style.display = 'block';
-        auditSteps.innerHTML = d.audit_trail.map(s => `
+      detailGrid.style.display = 'grid';
+
+      // Audit trail
+      auditSteps.innerHTML = '';
+      (data.audit_trail || []).forEach(s => {
+        auditSteps.innerHTML += `
           <div class="audit-step">
-            <div class="audit-step-num">${s.step}</div>
-            <div class="audit-step-body">
-              <div class="audit-tool">🔧 ${s.tool_called}</div>
-              <div class="audit-io">
-                <span class="lbl">Input:</span> ${s.input_summary}<br>
-                <span class="lbl">Output:</span> ${s.output_summary}
+            <div class="step-num">${s.step}</div>
+            <div class="step-body">
+              <div class="step-tool-badge">fn: ${s.tool_called}</div>
+              <div class="step-io">
+                <span class="lbl">Input </span>${s.input_summary}<br>
+                <span class="lbl">Output </span>${s.output_summary}
               </div>
             </div>
-          </div>
-        `).join('');
-      }
+          </div>`;
+      });
+      show(auditSection);
 
       // Raw JSON
-      jsonSection.style.display = 'block';
-      jsonOutput.textContent = JSON.stringify(d, null, 2);
+      jsonOutput.textContent = JSON.stringify(data, null, 2);
+      show(jsonSection);
     }
 
-    // ── Evaluate Button ────────────────────────────────────────
     evalBtn.addEventListener('click', async () => {
       const raw = claimJson.value.trim();
-      if (!raw) {
-        showError('Please select a sample claim or paste valid claim JSON.');
-        return;
-      }
+      if (!raw) { alert('Please select or paste a claim JSON first.'); return; }
 
       let payload;
-      try {
-        payload = JSON.parse(raw);
-      } catch (e) {
-        showError('Invalid JSON — please check the format and try again.');
-        return;
-      }
+      try { payload = JSON.parse(raw); }
+      catch { alert('Invalid JSON. Please check the format.'); return; }
 
-      // Remove non-schema field
-      delete payload.expected_decision;
-
-      showLoading();
+      clearOutput();
+      hide(emptyState);
+      show(skeletonEl, 'flex');
+      setLoading(true);
 
       try {
         const res = await fetch(`${API_BASE}/evaluate-claim/raw`, {
@@ -941,34 +1060,32 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         });
-
-        if (!res.ok) {
-          const err = await res.json();
-          throw new Error(err.detail || `HTTP ${res.status}`);
-        }
-
-        const decision = await res.json();
-        renderDecision(decision);
-
+        const data = await res.json();
+        hide(skeletonEl);
+        if (!res.ok) throw new Error(data.detail || `HTTP ${res.status}`);
+        renderDecision(data);
       } catch (e) {
-        showError(`${e.message}. Make sure the FastAPI server is running: uvicorn api:app --reload`);
+        hide(skeletonEl);
+        errorMsg.textContent = e.message;
+        show(errorToast);
+      } finally {
+        setLoading(false);
       }
     });
 
-    // ── Audit Trail Toggle ─────────────────────────────────────
+    // Collapsible toggles
     auditToggle.addEventListener('click', () => {
-      const open = auditBody.classList.toggle('open');
-      auditToggle.classList.toggle('open', open);
+      auditToggle.classList.toggle('open');
+      auditBody.classList.toggle('open');
     });
 
-    // ── JSON Toggle ────────────────────────────────────────────
     jsonToggle.addEventListener('click', () => {
-      const open = jsonBody.classList.toggle('open');
-      document.getElementById('json-arrow').textContent = open ? '▴' : '▾';
+      jsonToggle.classList.toggle('open');
+      jsonBody.classList.toggle('open');
     });
 
-    // ── Init ───────────────────────────────────────────────────
     loadSampleClaims();
   </script>
+
 </body>
 </html>

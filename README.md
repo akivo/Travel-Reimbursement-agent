@@ -151,3 +151,47 @@ pytest tests/ -v -k "TestTools"
 # Run a specific integration test
 pytest tests/ -v -k "TestClaim001Approved"
 ```
+
+---
+
+## Sample Outputs
+
+Four mock claims are included under `data/claims/`, covering all four decision paths. Generated output JSON files are saved under `outputs/` after running the CLI.
+
+| Claim | Employee | Scenario | Decision |
+|---|---|---|---|
+| CLM-001 | Rahul Sharma | All expenses within limits, receipts present, on time | **Approve** |
+| CLM-002 | Priya Patel | Hotel rate and meal exceeded policy limits | **Partially Approve** |
+| CLM-003 | David Lee | Business class without VP approval, submitted 71 days late | **Reject** |
+| CLM-004 | Anjali Mehta | Missing receipts for >50% of total claim value | **Manual Review** |
+
+Each output JSON contains the full `ReimbursementDecision` schema including `decision`, `approved_amount`, `rejected_amount`, `deductions`, `policy_references`, `confidence`, `explanation`, and `audit_trail`.
+
+---
+
+## Assumptions and Limitations
+
+### Assumptions
+- All monetary amounts are in USD.
+- The travel policy document (`data/policy.md`) is the single source of truth. No external policy database is queried.
+- The duplicate detector uses an in-memory registry. In production this would query a claims database.
+- Groq free-tier API is used for inference. Rate limits may apply during high-volume testing.
+- Submission deadline is calculated as calendar days (not business days) between travel end date and submission date.
+- Meals are exempt from the receipt requirement (per-diem basis), consistent with common corporate policy.
+
+### Simplifications
+- The policy store uses keyword-based section matching rather than a vector embedding search (e.g. FAISS or Chroma). Sufficient for the scope of this prototype.
+- No authentication or user session management is implemented on the API.
+- The approval matrix is a static JSON file. In production this would be configurable per department or region.
+
+### Known Gaps
+- The agent does not handle multi-currency claims. All amounts are assumed to be pre-converted to USD.
+- There is no persistent storage for submitted claims or audit logs. All data is in-memory per session.
+- PDF or image receipt parsing is not implemented. Receipt presence is indicated by a boolean flag in the claim JSON.
+
+### What I Would Improve Next
+- Replace keyword policy search with a vector store (FAISS or Chroma) for more accurate retrieval on large policy documents.
+- Add a persistent database (PostgreSQL) to store claim history and enable true duplicate detection across sessions.
+- Implement streaming LLM responses so the UI shows the agent's reasoning in real time.
+- Add role-based access control to the API so managers can view claims routed to their queue.
+- Extend the test suite with property-based tests to validate agent behaviour across edge-case claim combinations.
