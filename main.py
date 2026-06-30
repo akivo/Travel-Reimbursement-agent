@@ -1,9 +1,12 @@
+import sys
 import json
 import argparse
 from pathlib import Path
 from src.models import ClaimInput, ReimbursementDecision
 from src.agent import evaluate_claim
 from src.audit import format_audit_trail
+
+sys.stdout.reconfigure(encoding="utf-8")
 
 GREEN = "\033[92m"
 YELLOW = "\033[93m"
@@ -46,8 +49,8 @@ def print_decision(decision: ReimbursementDecision) -> None:
     print(f"  {BOLD}Decision:  {RESET}{color}{BOLD}{icon} {decision.decision}{RESET}")
     print(f"  {BOLD}Confidence:{RESET} {decision.confidence * 100:.0f}%")
     print(sep2)
-    print(f"  {BOLD}Approved Amount: {RESET} ${decision.approved_amount:,.2f}")
-    print(f"  {BOLD}Rejected Amount: {RESET} ${decision.rejected_amount:,.2f}")
+    print(f"  {BOLD}Approved Amount: {RESET} \u20b9{decision.approved_amount:,.2f}")
+    print(f"  {BOLD}Rejected Amount: {RESET} \u20b9{decision.rejected_amount:,.2f}")
     print(f"  {BOLD}Required Approver:{RESET} {decision.required_approver}")
     print(f"  {BOLD}Routed To:       {RESET} {decision.routed_to}")
 
@@ -55,8 +58,8 @@ def print_decision(decision: ReimbursementDecision) -> None:
         print(f"\n  {BOLD}Deductions:{RESET}")
         for d in decision.deductions:
             print(f"    * {d.expense_description}: "
-                  f"claimed ${d.claimed_amount:.2f} -> approved ${d.approved_amount:.2f} "
-                  f"(deducted ${d.deducted_amount:.2f})")
+                  f"claimed \u20b9{d.claimed_amount:.2f} -> approved \u20b9{d.approved_amount:.2f} "
+                  f"(deducted \u20b9{d.deducted_amount:.2f})")
             print(f"      Reason: {d.reason} [{d.policy_ref}]")
 
     if decision.missing_documents:

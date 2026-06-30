@@ -16,10 +16,10 @@
   "expenses": [
     {
       "category": "ground_transport",
-      "description": "Personal car — 320 miles round trip",
-      "amount": 214.40,
-      "miles": 320,
-      "rate_per_mile": 0.67,
+      "description": "Personal car — 480 km round trip",
+      "amount": 6720.00,
+      "miles": 480,
+      "rate_per_mile": 14,
       "has_receipt": false,
       "vendor": "Personal Vehicle",
       "date": "2025-06-01"
@@ -27,7 +27,7 @@
     {
       "category": "meals",
       "description": "Team working lunch — unclear if business or personal",
-      "amount": 95.00,
+      "amount": 1800.00,
       "has_receipt": true,
       "vendor": "Cafe Coffee Day",
       "date": "2025-06-02",
@@ -36,9 +36,9 @@
     {
       "category": "hotel",
       "description": "Homestay accommodation — no formal invoice",
-      "amount": 180.00,
+      "amount": 5000.00,
       "nights": 2,
-      "per_night": 90.00,
+      "per_night": 2500.00,
       "has_receipt": false,
       "vendor": "Private Homestay",
       "date": "2025-06-01",
@@ -47,13 +47,13 @@
     {
       "category": "other",
       "description": "Workshop materials and stationery",
-      "amount": 75.00,
+      "amount": 1200.00,
       "has_receipt": true,
-      "vendor": "Staples",
+      "vendor": "Staples India",
       "date": "2025-06-02",
       "note": "Category unclear — could be office supplies or training expense"
     }
   ],
-  "total_claimed": 564.40,
+  "total_claimed": 14720.00,
   "expected_decision": "Manual Review"
 }

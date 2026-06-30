@@ -8,8 +8,8 @@ from src.models import ClaimInput, ReimbursementDecision, AuditStep
 from src.tools import policy_lookup, limit_checker, receipt_validator, duplicate_detector, approval_threshold
 from src.audit import AuditLogger
 
-SYSTEM_PROMPT = """You are a Travel Reimbursement Approval Agent for HCL Corp.
-Evaluate the claim and tool results. Return a JSON decision.
+SYSTEM_PROMPT = """You are a Travel Reimbursement Approval Agent for HCL Tech India.
+Evaluate the claim and tool results. Return a JSON decision. All amounts are in Indian Rupees (INR, symbol \u20b9).
 
 DECISION TYPES:
 - Approve: all items within limits, receipts present, on time, no duplicate.
@@ -22,13 +22,13 @@ CALCULATION RULES:
 - rejected_amount: The sum of all deducted/rejected amounts.
 - total_claimed = approved_amount + rejected_amount.
 - For each deduction, specify: claimed_amount, approved_amount (claimed - deducted), and deducted_amount.
-- For fully rejected items (e.g. missing receipts > $25), deducted_amount equals claimed_amount, and approved_amount is 0.0.
+- For fully rejected items (e.g. missing receipts above \u20b9500), deducted_amount equals claimed_amount and approved_amount is 0.0.
 
-DEDUCTION RULES:
-- Hotel >$200/night: deduct (rate - 200) * nights
-- Meals >$75/day: deduct excess
-- Rideshare/taxi >$50/trip: deduct excess
-- Missing receipt on item >$25: reject that item entirely (approved = 0)
+DEDUCTION RULES (amounts in INR):
+- Hotel >\u20b98,000/night: deduct (rate - 8000) * nights
+- Meals >\u20b91,500/day: deduct excess
+- Taxi/rideshare >\u20b91,500/trip: deduct excess
+- Missing receipt on item >\u20b9500: reject that item entirely (approved = 0)
 - Alcohol: reject entirely
 - Personal entertainment: reject entirely
 - Business class without VP approval: reject flight entirely
@@ -163,7 +163,7 @@ def _parse_decision(raw: str, claim: ClaimInput, audit_steps: list[AuditStep]) -
 
         missing_sum = sum(
             exp.amount for exp in claim.expenses
-            if exp.category != "meals" and exp.amount > 25 and not exp.has_receipt
+            if exp.category != "meals" and exp.amount > 500 and not exp.has_receipt
         )
         if missing_sum > 0.5 * claim.total_claimed:
             decision.decision = "Manual Review"

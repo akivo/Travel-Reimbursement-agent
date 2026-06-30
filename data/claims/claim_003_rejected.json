@@ -16,8 +16,8 @@
   "expenses": [
     {
       "category": "flight",
-      "description": "Business class — Delhi to London (no VP approval)",
-      "amount": 4200.00,
+      "description": "Business class — Delhi to London (no VP approval obtained)",
+      "amount": 285000.00,
       "type": "international",
       "class": "business",
       "has_receipt": true,
@@ -26,10 +26,10 @@
     },
     {
       "category": "hotel",
-      "description": "The Savoy London — 5 nights at $350/night",
-      "amount": 1750.00,
+      "description": "The Savoy London — 5 nights at Rs.22,000/night",
+      "amount": 110000.00,
       "nights": 5,
-      "per_night": 350.00,
+      "per_night": 22000.00,
       "has_receipt": true,
       "vendor": "The Savoy",
       "date": "2025-04-05"
@@ -37,13 +37,13 @@
     {
       "category": "meals",
       "description": "Per diem — 5 days",
-      "amount": 375.00,
+      "amount": 7500.00,
       "days": 5,
       "has_receipt": false,
       "vendor": "Per Diem",
       "date": "2025-04-05"
     }
   ],
-  "total_claimed": 6325.00,
+  "total_claimed": 402500.00,
   "expected_decision": "Reject"
 }

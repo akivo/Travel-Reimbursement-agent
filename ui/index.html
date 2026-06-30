@@ -976,8 +976,8 @@
       confidencePct.textContent = `${pct}%`;
       setTimeout(() => { confidenceBar.style.width = `${pct}%`; }, 50);
 
-      approvedAmt.textContent = `$${(data.approved_amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
-      rejectedAmt.textContent = `$${(data.rejected_amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+      approvedAmt.textContent = `\u20b9${(data.approved_amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+      rejectedAmt.textContent = `\u20b9${(data.rejected_amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
       approverBadge.textContent = data.required_approver || '—';
       routedTo.textContent = data.routed_to || '—';
 

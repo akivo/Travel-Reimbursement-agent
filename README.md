@@ -48,6 +48,7 @@ The system uses a pipeline pattern combining deterministic policy verification t
 - **Model Inference**: Groq Cloud (`llama-3.1-8b-instant`)
 - **API Framework**: FastAPI
 - **Web Interface**: HTML5 / CSS / Vanilla JavaScript
+- **Currency**: Indian Rupee (₹ INR) — all policy limits and claim amounts are in INR
 
 ---
 
@@ -158,12 +159,12 @@ pytest tests/ -v -k "TestClaim001Approved"
 
 Four mock claims are included under `data/claims/`, covering all four decision paths. Generated output JSON files are saved under `outputs/` after running the CLI.
 
-| Claim | Employee | Scenario | Decision |
-|---|---|---|---|
-| CLM-001 | Rahul Sharma | All expenses within limits, receipts present, on time | **Approve** |
-| CLM-002 | Priya Patel | Hotel rate and meal exceeded policy limits | **Partially Approve** |
-| CLM-003 | David Lee | Business class without VP approval, submitted 71 days late | **Reject** |
-| CLM-004 | Anjali Mehta | Missing receipts for >50% of total claim value | **Manual Review** |
+| Claim | Employee | Total Claimed | Scenario | Decision |
+|---|---|---|---|---|
+| CLM-001 | Riya Sharma | ₹26,350 | All expenses within limits, receipts present, on time | **Approve** |
+| CLM-002 | Karan Patel | ₹51,650 | Hotel (₹11,500/night) and client dinner exceed policy limits | **Partially Approve** |
+| CLM-003 | Vivek Nair | ₹4,02,500 | Business class without VP approval, submitted 71 days late | **Reject** |
+| CLM-004 | Ananya Iyer | ₹14,720 | Missing receipts for personal car + homestay (79% undocumented) | **Manual Review** |
 
 Each output JSON contains the full `ReimbursementDecision` schema including `decision`, `approved_amount`, `rejected_amount`, `deductions`, `policy_references`, `confidence`, `explanation`, and `audit_trail`.
 
@@ -172,7 +173,8 @@ Each output JSON contains the full `ReimbursementDecision` schema including `dec
 ## Assumptions and Limitations
 
 ### Assumptions
-- All monetary amounts are in USD.
+- All monetary amounts are in Indian Rupees (₹ INR), consistent with HCL Tech's India-based operations.
+- Policy limits reflect standard Indian corporate travel policy: ₹8,000/night hotel, ₹1,500/day meals, ₹15,000 domestic flight cap.
 - The travel policy document (`data/policy.md`) is the single source of truth. No external policy database is queried.
 - The duplicate detector uses an in-memory registry. In production this would query a claims database.
 - Groq free-tier API is used for inference. Rate limits may apply during high-volume testing.

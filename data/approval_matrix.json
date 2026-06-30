@@ -3,23 +3,23 @@
     {
       "name": "Auto-Approve",
       "min_amount": 0,
-      "max_amount": 200,
+      "max_amount": 10000,
       "required_approver": "Automated",
       "conditions": "All receipts present, all items within limits, submitted on time",
       "policy_ref": "§6. Approval Thresholds"
     },
     {
       "name": "Manager Approval",
-      "min_amount": 201,
-      "max_amount": 2000,
+      "min_amount": 10001,
+      "max_amount": 100000,
       "required_approver": "Direct Manager",
       "conditions": "Standard travel, within policy limits",
       "policy_ref": "§6. Approval Thresholds"
     },
     {
       "name": "VP Approval",
-      "min_amount": 2001,
-      "max_amount": 999999,
+      "min_amount": 100001,
+      "max_amount": 9999999,
       "required_approver": "Vice President",
       "conditions": "High-value claims or any policy exception",
       "policy_ref": "§6. Approval Thresholds"

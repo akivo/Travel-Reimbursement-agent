@@ -1,32 +1,32 @@
 {
   "flight": {
-    "domestic_max": 800,
-    "international_max": 2000,
+    "domestic_max": 15000,
+    "international_max": 150000,
     "business_class_allowed": false,
     "receipt_required": true,
     "policy_ref": "§2. Flight / Air Travel"
   },
   "hotel": {
-    "per_night_max": 200,
+    "per_night_max": 8000,
     "receipt_required": true,
     "policy_ref": "§3. Hotel / Accommodation"
   },
   "meals": {
-    "per_diem_per_day": 75,
-    "client_entertainment_per_person": 150,
+    "per_diem_per_day": 1500,
+    "client_entertainment_per_person": 3000,
     "receipt_required": false,
     "policy_ref": "§4. Meals & Per Diem"
   },
   "ground_transport": {
-    "taxi_per_trip_max": 50,
-    "rental_car_per_day_max": 80,
-    "mileage_per_mile": 0.67,
-    "parking_per_day_max": 30,
+    "taxi_per_trip_max": 1500,
+    "rental_car_per_day_max": 3500,
+    "mileage_per_mile": 14,
+    "parking_per_day_max": 500,
     "receipt_required": true,
     "policy_ref": "§5. Ground Transportation"
   },
   "global": {
-    "receipt_required_above": 25,
+    "receipt_required_above": 500,
     "submission_window_days": 30,
     "missing_docs_manual_review_threshold_pct": 50,
     "policy_ref": "§1. General Rules"

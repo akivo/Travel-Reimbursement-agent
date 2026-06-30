@@ -36,7 +36,7 @@ def limit_checker(category: str, amount: float, unit: str = "total") -> str:
 
     within = amount <= max_val
     excess = round(max(0.0, amount - max_val), 2)
-    return f"Category: {category} | Claimed: ${amount} | Limit: ${max_val} | Within limit: {within} | Excess: ${excess}"
+    return f"Category: {category} | Claimed: \u20b9{amount} | Limit: \u20b9{max_val} | Within limit: {within} | Excess: \u20b9{excess}"
 
 
 @tool
@@ -49,8 +49,8 @@ def receipt_validator(expenses: list) -> str:
     for item in expenses:
         if item.get("category") == "meals":
             continue
-        if item.get("amount", 0) > 25 and not item.get("has_receipt", False):
-            missing.append(f"'{item.get('description', 'unknown')}' (${item.get('amount')})")
+        if item.get("amount", 0) > 500 and not item.get("has_receipt", False):
+            missing.append(f"'{item.get('description', 'unknown')}' (\u20b9{item.get('amount')})")
 
     if not missing:
         return "All required receipts are present."
@@ -72,7 +72,7 @@ def approval_threshold(total_amount: float) -> str:
     """Return the required approval tier for a given claim total."""
     tier = get_approval_tier(total_amount)
     return (
-        f"Total: ${total_amount} | Tier: {tier['name']} | "
+        f"Total: \u20b9{total_amount} | Tier: {tier['name']} | "
         f"Required approver: {tier['required_approver']} | "
         f"Policy ref: {tier['policy_ref']}"
     )
